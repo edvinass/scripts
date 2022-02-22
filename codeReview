@@ -1,0 +1,16 @@
+
+[ -z "$1" ] && echo "Need to specify branch name" && exit
+
+cd $REVIEW_REPOSITORY
+git commit -am "Code saved before review"
+workingBranchName=$(git rev-parse --abbrev-ref HEAD)
+git remote update --prune
+git fetch origin develop:develop
+git checkout -b code-review/"$1" --track origin/"$1" &&
+git reset develop &&
+echo "After finishing review to return to initial branch press ENTER"
+read
+git add .
+git commit -am "Discard code"
+git checkout $workingBranchName
+git branch -fd code-review/"$1"
