@@ -1,3 +1,3 @@
 osascript -e 'quit app "Xcode"'
-rm -R "$(DERIVED_DATA)"
+rm -rf $DERIVED_DATA
 osascript -e 'open app "Xcode"'
