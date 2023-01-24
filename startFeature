@@ -1,0 +1,11 @@
+
+[ -z "$1" ] && echo "Need to specify branch name" && exit
+
+cd $REVIEW_REPOSITORY
+git commit -am "Code saved starting the new task"
+workingBranchName=$(git rev-parse --abbrev-ref HEAD)
+git remote update --prune
+git checkout develop
+git pull
+git checkout -b "$1"
+git push --set-upstream origin "$1"
