@@ -30,11 +30,6 @@ def interactive_setup():
     """Guide the user through the setup process step by step."""
     steps = [
         ("🍺 Install Homebrew", install_homebrew),
-        ("🧊 Install rbenv and Ruby 3.1.0", install_rbenv),
-        ("🔧 Install Bundler", install_bundler),
-        ("🔧 Install Flutter using FVM", install_flutter),
-        ("🤖 Install Android Studio", install_android_studio),
-        ("🛠️ Install Xcode Command Line Tools", install_xcode),
         ("🔐 Set up GPG for commit signing", setup_gpg),
         ("🔧 Set up pre-commit hooks", setup_pre_commit_hooks),
     ]

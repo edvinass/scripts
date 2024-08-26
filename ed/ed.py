@@ -21,9 +21,6 @@ def cli():
 @cli.command()
 @click.option('--all', is_flag=True, help="Install all dependencies")
 @click.option('--homebrew', is_flag=True, help="Install Homebrew")
-@click.option('--android-studio', is_flag=True, help="Install Android Studio")
-@click.option('--xcode', is_flag=True, help="Install Xcode command line tools")
-@click.option('--cocoapods', is_flag=True, help="Install CocoaPods")
 @click.option('--gpg', is_flag=True, help="Set up GPG for commit signing")
 @click.option('--pre-commit', is_flag=True, help="Set up pre-commit hooks")
 def install(all, **kwargs):
@@ -31,11 +28,6 @@ def install(all, **kwargs):
 
     steps = [
         ("🍺 Install Homebrew", kwargs['homebrew'], install_homebrew),
-        ("🧊 Install rbenv and Ruby 3.1.0", kwargs['rbenv'], install_rbenv),
-        ("📦 Install Bundler", kwargs['bundler'], install_bundler),
-        ("🛠️ Install Flutter using FVM", kwargs['flutter'], install_flutter),
-        ("🤖 Install Android Studio", kwargs['android_studio'], install_android_studio),
-        ("🛠️ Install Xcode Command Line Tools", kwargs['xcode'], install_xcode),
         ("🔐 Set up GPG for commit signing", kwargs['gpg'], setup_gpg),
         ("🔧 Set up pre-commit hooks", kwargs['pre_commit'], setup_pre_commit_hooks),
     ]
@@ -49,6 +41,11 @@ def install(all, **kwargs):
 def doctor():
     """Check status of installed tools"""
     print_status_table()
+    
+@cli.command()
+def interactive():
+    """Interactive setup"""
+    interactive_setup()
     
 if __name__ == "__main__":
     cli()

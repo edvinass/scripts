@@ -2,7 +2,6 @@
 
 import os
 import subprocess
-import click
 import sys
 import shutil
 import re
@@ -113,14 +112,6 @@ def check_and_install_tool(tool_name, install_func, interactive=False):
         install_func()
         return True
     return False
-
-# Specific Installation Functions with Checks
-def install_homebrew(interactive=False):
-    check_and_install_tool("brew", lambda: run_command(
-        '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"',
-        success_msg="🍺 Homebrew installed successfully.",
-        error_msg="❌ Failed to install Homebrew"
-    ), interactive)
     
 def print_rich_step(step_name):
     """Print a rich-styled separator for each step."""
