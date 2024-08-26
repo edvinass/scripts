@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Print a message about what the script is doing
-echo "Setting up the Python environment and toolbelt command..."
+echo "Setting up the Python environment and ed command..."
 
 # Determine the repository root path (one level up from where the script is located)
 REPO_ROOT=$(dirname "$(pwd)")
@@ -16,11 +16,11 @@ if [[ "$CONFIRM" != "y" ]]; then
     exit 1
 fi
 
-# Define the directory for the Python environment in the "toolbelt/setup" subdirectory
-ENV_DIR="$REPO_ROOT/toolbelt/setup/toolbelt_python_env"
+# Define the directory for the Python environment in the "ed/setup" subdirectory
+ENV_DIR="$REPO_ROOT/ed/setup/ed_venv"
 
-# Create the "toolbelt/setup" directory if it doesn't exist
-mkdir -p "$REPO_ROOT/toolbelt/setup"
+# Create the "ed/setup" directory if it doesn't exist
+mkdir -p "$REPO_ROOT/ed/setup"
 
 # Print a message about the environment setup
 echo "Creating a virtual environment at $ENV_DIR..."
@@ -41,13 +41,13 @@ echo "Upgrading pip..."
 pip install --upgrade pip
 
 # Print a message about installing dependencies
-REQUIREMENTS_FILE="$REPO_ROOT/toolbelt/requirements.txt"
+REQUIREMENTS_FILE="$REPO_ROOT/ed/requirements.txt"
 echo "Installing dependencies from $REQUIREMENTS_FILE..."
 
 # Check if the requirements.txt file exists
 if [ ! -f "$REQUIREMENTS_FILE" ]; then
     echo "ERROR: Could not find the requirements.txt file at $REQUIREMENTS_FILE"
-    echo "Please ensure the file exists in the 'setup' subdirectory of 'toolbelt'."
+    echo "Please ensure the file exists in the 'setup' subdirectory of 'ed'."
     exit 1
 fi
 
@@ -72,26 +72,26 @@ echo "Adding MONARCH_ROOT environment variable to $PROFILE_FILE..."
 # Add MONARCH_ROOT environment variable to the user's shell configuration
 echo "export MONARCH_ROOT=\"$REPO_ROOT\"" >> $PROFILE_FILE
 
-# Create a simple wrapper script for the command named 'toolbelt'
-TOOLBELT_COMMAND="$REPO_ROOT/toolbelt/setup/toolbelt"
-echo "Creating the toolbelt command at $TOOLBELT_COMMAND..."
+# Create a simple wrapper script for the command named 'ed'
+ED_COMMAND="$REPO_ROOT/ed/setup/ed"
+echo "Creating the ed command at $ED_COMMAND..."
 
-cat <<EOL > $TOOLBELT_COMMAND
+cat <<EOL > $ED_COMMAND
 #!/bin/bash
 # Activate the virtual environment
 source $ENV_DIR/bin/activate
 # Run the Python script with the provided arguments
-python $REPO_ROOT/toolbelt/toolbelt.py "\$@"
+python $REPO_ROOT/ed/ed.py "\$@"
 EOL
 
 # Make the wrapper script executable
-chmod +x $TOOLBELT_COMMAND
+chmod +x $ED_COMMAND
 
 # Print a message about adding the script to the user's PATH
-echo "Adding the toolbelt command to your PATH in $PROFILE_FILE..."
+echo "Adding the ed command to your PATH in $PROFILE_FILE..."
 
 # Add the script to the user's PATH in their shell configuration
-echo "export PATH=\"$REPO_ROOT/toolbelt/setup:\$PATH\"" >> $PROFILE_FILE
+echo "export PATH=\"$REPO_ROOT/ed/setup:\$PATH\"" >> $PROFILE_FILE
 
 # Notify the user to reload their shell manually
 echo "Setup complete. Please run the following command to reload your shell configuration:"
@@ -103,4 +103,4 @@ else
     echo "source ~/.profile"
 fi
 
-echo "You can now use the 'toolbelt' command to run your script."
+echo "You can now use the 'ed' command to run your script."

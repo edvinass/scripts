@@ -38,14 +38,6 @@ def check_if_user_can_sudo():
     except subprocess.CalledProcessError:
         return False
 
-def aquire_super_user_privileges():
-    if not check_if_user_can_sudo():
-        console.print("Use Self Service 'Temprorary Admin Privileges' to elevate admin rights", style="bold red")
-        run_command(r"open /Applications/Self\ Service.app", success_msg="✅ Self Service opened successfully.", error_msg="❌ Failed to open Self Service")
-        console.print("🔒 You need to have admin rights to run this script. Please enter your password.", style="bold red")
-        
-    run_command("sudo -v", success_msg="✅ Admin rights verified.", error_msg="❌ Failed to verify admin rights")
-
 def is_installed(command, doctor=False):
     if DRY_RUN and not doctor:
         console.print(f"[dry-run] Checking if '{command}' is installed...")
@@ -74,9 +66,6 @@ def confirm_installation(tool_name):
             return False
         else:
             print("⚠️ Invalid input. Please enter 'y' for yes or 'n' for no.")
-
-def prompt_for_license_key():
-    return input("🔑 Please enter your DCM license key (or press Enter to skip): ").strip()
 
 # Installation Helpers
 def brew_install(package_name, success_msg, error_msg, is_cask=False):
@@ -270,90 +259,6 @@ def setup_mkcert_and_node_server(interactive=False):
         env_file_path = f"{MONARCH_ROOT}/app/.env"
         xerxes_web_redirect_uri = "https://dev.monarchui.comcast.net/oauth2redirect"
         modify_file(env_file_path, f"\nXERXES_WEB_REDIRECT_URI={xerxes_web_redirect_uri}\n")
-
-def is_firebase_cli_installed():
-    return subprocess.getoutput("dart pub global list | grep flutterfire_cli").strip() != ""
-
-def get_firebase_cli_version():
-    try:
-        result = subprocess.getoutput("flutterfire --version")
-        return result.splitlines()[0] if result else "Unknown"
-    except Exception:
-        return "Unknown"
-
-def update_hosts_file(interactive=False):
-    hosts_file_path = "/etc/hosts"
-    hosts_entries_file = f"{MONARCH_ROOT}/toolbelt/hosts_entries.txt"  
-    # Read host entries from file
-    try:
-        with open(hosts_entries_file, "r") as file:
-            hosts_entries = file.read().strip()
-    except FileNotFoundError:
-        console.print(f"❌ {hosts_entries_file} not found. Please ensure the file exists.", style="red")
-        return        
-    
-    with open(hosts_file_path, "r") as file:
-        current_contents = file.read()
-    if any(line.strip() in current_contents for line in hosts_entries.splitlines()):
-        console.print("⚠️ Some or all entries already exist in the /etc/hosts file.", style="yellow")
-        return
-    
-    if interactive and not confirm_installation("Update /etc/hosts file"):
-        modify_file(hosts_file_path, hosts_entries)
-
-def switch_to_flutter_main(interactive=False):
-    if subprocess.getoutput("flutter channel").strip() == "main":
-        console.print("🔧 Flutter is already on the correct main revision (76fe247aae). Skipping.", style="yellow")
-        return
-    
-    if interactive and not confirm_installation("Switch to Flutter main branch"):
-        console.print("❌ Skipping switch to Flutter main branch.", style="red")
-        return
-
-    console.print("🔧 Switching to Flutter main for straight-up Flutter users...", style="green")
-    run_command("flutter channel main --no-cache-artifacts", success_msg="✅ Switched to Flutter main channel.", error_msg="❌ Failed to switch to Flutter main channel")
-    run_command("flutter upgrade", success_msg="✅ Flutter upgraded to the latest main version.", error_msg="❌ Failed to upgrade Flutter")
-
-    flutter_bin_dir = subprocess.getoutput("which flutter | xargs dirname | xargs dirname")
-    run_command(f"cd {flutter_bin_dir} && git checkout 76fe247aae", success_msg="✅ Checked out Flutter revision 76fe247aae.", error_msg="❌ Failed to check out the correct Flutter revision")
-    
-    
-    # console.print("🔧 Switching to Flutter main using FVM...", style="green")
-    # run_command("fvm use main", success_msg="✅ Switched to Flutter main using FVM.", error_msg="❌ Failed to switch to Flutter main using FVM")
-    # run_command("fvm global main", success_msg="✅ Set Flutter main as global using FVM.", error_msg="❌ Failed to set Flutter main as global using FVM")
-    
-    run_command("flutter pub global activate melos", success_msg="✅ Melos activated globally.", error_msg="❌ Failed to activate Melos")
-
-    console.print("🎉 Flutter is now on the correct main revision (76fe247aae).", style="bold green")
-    console.print("run 'fvm global main' to set Flutter main as global using FVM.", style="bold green")
-    console.print(f"run 'fvm use main' in {MONARCH_ROOT} to to set Flutter main for the project.", style="bold green")
-    console.print("👉 Run `melos bs` to bootstrap Melos.", style="bold")
-
-def print_step_descriptions():
-    steps = [
-        ("🍺 Install Homebrew", "Homebrew is a package manager for macOS that simplifies the installation of software. It's essential for installing many development tools."),
-        ("🧊 Install rbenv and Ruby 3.1.0", "rbenv allows you to manage multiple Ruby versions. This step installs rbenv and sets up Ruby 3.1.0, which is required for some build tools."),
-        ("🔧 Install Bundler", "Bundler is a Ruby gem that helps manage dependencies in Ruby projects. It ensures that you use the same versions of gems as specified in the project."),
-        ("🔧 Install Flutter using FVM", "FVM (Flutter Version Manager) helps manage multiple versions of Flutter. This step ensures that the correct Flutter version is installed and used globally."),
-        ("🤖 Install Android Studio", "Android Studio is the official IDE for Android development. It includes the Android SDK, which is required for building and running Flutter apps on Android."),
-        ("🛠️ Install Xcode Command Line Tools", "Xcode Command Line Tools are necessary for iOS development. They provide essential tools for building and running Flutter apps on iOS."),
-        ("🌱 Install CocoaPods", "CocoaPods is a dependency manager for iOS projects. It's required for integrating third-party libraries into iOS apps."),
-        ("🚀 Install Fastlane", "Fastlane automates app releases and other development tasks. It's widely used for deploying Flutter apps to the App Store and Google Play."),
-        ("🔥 Install Firebase CLI", "The Firebase CLI allows you to manage Firebase projects and interact with Firebase services. It's crucial for apps that use Firebase."),
-        ("🎛️ Install and set up Melos", "Melos is a tool for managing monorepos in Dart and Flutter projects. This step ensures that Melos is installed and ready to use."),
-        ("⚙️ Install DCM", "Dart Code Metrics (DCM) is a static analysis tool. This step installs DCM and optionally activates it using a license key."),
-        ("🔐 Set up GPG for commit signing", "GPG ensures that all commits are signed and verifiable. This step installs GPG, generates a new GPG key, and configures Git to sign commits by default."),
-        ("🔧 Set up pre-commit hooks", "Pre-commit hooks run checks before code is committed. This step installs pre-commit and sets up the hooks for the repository."),
-        ("🔧 Set up Android keystore", "This step helps you create a keystore for Android release builds and configures the project to use it."),
-        ("🔧 Set up MkCert and Node.js server for HTTPS", "This step installs MkCert for generating local HTTPS certificates, sets up a Node.js server, and configures the Flutter web app for local HTTPS development."),
-        ("⚙️ Update /etc/hosts file", "This step updates the /etc/hosts file with the necessary domain entries, ensuring that your system resolves internal domains correctly."),
-        ("🔧 Switch to Flutter main branch", "This step switches your local Flutter setup to the main branch and ensures that you're using the correct revision. This is necessary as part of the migration to Flutter main.")
-    ]
-
-    console.print(Panel.fit("\n🛠️ The interactive setup will guide you through the following steps:\n", title="Interactive Setup", style="bold"))
-    for step_name, description in steps:
-        console.print(f"[cyan]{step_name}[/cyan]: {description}")
-    console.print(Panel.fit("\n⚠️ Once all steps are completed, you'll be ready to start development. Some steps require manual actions, so please follow the prompts carefully.\n", style="bold red"))
 
 def print_status_table():
     console.print(Panel.fit("🔍 Checking status of installed tools...", style="bold cyan"))
@@ -576,8 +481,6 @@ def interactive_setup():
         ("🔧 Set up pre-commit hooks", setup_pre_commit_hooks),
         ("🔧 Set up Android keystore", setup_android_keystore),
         ("🔧 Set up MkCert and Node.js server for HTTPS", setup_mkcert_and_node_server),
-        ("⚙️ Update /etc/hosts file", update_hosts_file),
-        ("🔧 Switch to Flutter main branch", switch_to_flutter_main)
     ]
 
     console.print(Panel.fit("🛠️ Starting interactive setup...", title="Interactive Setup", style="bold cyan"))
