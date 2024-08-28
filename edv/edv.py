@@ -8,8 +8,9 @@ from rich.console import Console
 from utils import *
 from install import *
 from interactive import *
+from openai_utils import *
 
-ED_ROOT = os.environ.get("ED_ROOT")
+ED_ROOT = os.environ.get("EDV_ROOT")
 console = Console()
 
 DRY_RUN = False
@@ -46,6 +47,12 @@ def doctor():
 def interactive():
     """Interactive setup"""
     interactive_setup()
+    
+@cli.command()
+def ai():
+    """AI"""
+    write_story()
+    
     
 if __name__ == "__main__":
     cli()
