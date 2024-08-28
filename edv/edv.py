@@ -53,6 +53,17 @@ def ai():
     """AI"""
     write_story()
     
+@cli.command()
+@click.argument('dir')
+def directory(dir):
+    """Directory"""
+    sturcture = format_structure(get_directory_structure(dir))
+    console.print(sturcture)
+    console.print(directory_suggestion(sturcture), style="bold")
+    
+    
+    
+    
     
 if __name__ == "__main__":
     cli()
