@@ -62,8 +62,5 @@ def directory(dir):
     console.print(directory_suggestion(sturcture), style="bold")
     
     
-    
-    
-    
 if __name__ == "__main__":
     cli()
