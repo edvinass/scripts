@@ -20,11 +20,15 @@ def write_story():
     
 def directory_suggestion(directory_structure):
     message = f"""
-Based on directory stuctrure, come up with better oraganisation of files and folders.
-Print how directory structure would look like after changes:
------
+Task: Given the provided directory structure, reorganize the files and folders for improved clarity and efficiency. Create a JSON representation showing the updated directory structure after the changes. Consider organizing files by their type (e.g., documents, archives, code files) and grouping related items into subfolders.
+
+Current Directory Structure:
 {directory_structure}. 
------
+Output Requirements:
+- Provide a new directory structure in JSON format.
+- Group similar items into folders (e.g., Documents, Archives, Code, etc.).
+- Remove or consolidate unnecessary or redundant files.
+- Ensure the new structure is logical and easy to navigate.
 """
     print(message)
     completion = client.chat.completions.create(
