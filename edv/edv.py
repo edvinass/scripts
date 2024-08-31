@@ -9,6 +9,7 @@ from utils import *
 from install import *
 from interactive import *
 from openai_utils import *
+from move_files import *
 
 ED_ROOT = os.environ.get("EDV_ROOT")
 console = Console()
@@ -57,12 +58,12 @@ def ai():
 @click.argument('dir')
 def directory(dir):
     """Directory"""
-    sturcture = directory_to_json(dir)
-    console.print(sturcture)
-    console.print(directory_suggestion(sturcture), style="bold")
-    
-
-    
+    input_dict = dict(directory_to_json(dir))
+    console.print(input_dict, style="blue")
+    output_dict = dict(directory_suggestion(input_dict))
+    console.print(output_dict, style="bold green")
+    target_directory = dir + "_new"
+    move_files(dir, target_directory, input_dict, output_dict, DRY_RUN)
     
 if __name__ == "__main__":
     cli()

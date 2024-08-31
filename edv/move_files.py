@@ -3,13 +3,32 @@ import os
 import shutil
 import json
 
-def move_files(current_dir, target_dir, input1, input2, dry_run=True):
+
+def verify_params(current_dir, target_dir, input1, input2, dry_run=True):
+    # Print params for debugging
+    print(f"Current Directory: {current_dir}")
+    print(f"Target Directory: {target_dir}")
+    print(f"Input1: {input1}")
+    print(f"Input2: {input2}")
+    print(f"Dry Run: {dry_run}")
+    
+
+def move_files(current_dir: str, target_dir: str, input1: dict, input2: dict, dry_run=True):
+    verify_params(current_dir, target_dir, input1, input2, dry_run)
+    """ Move files from the current directory structure to the target directory structure.
+    Args:
+        current_dir (str): The path to the current directory.
+        target_dir (str): The path to the target directory.
+        input1 (dict): The JSON representation of the current directory structure.
+        input2 (dict): The JSON representation of the target directory structure.
+        dry_run (bool, optional): If True, the files will not be moved. Defaults to True.
+    """
     # Flatten the file structure of input1 to find the current location of each file
-    current_locations = {}
+    current_locations: dict = {}
     flatten_structure(current_dir, input1, current_locations)
     
     # Flatten the file structure of input2 to find where each file should be moved
-    target_locations = {}
+    target_locations: dict = {}
     flatten_structure(target_dir, input2, target_locations)
     
     # Move the files from current_locations to target_locations
@@ -24,7 +43,7 @@ def move_files(current_dir, target_dir, input1, input2, dry_run=True):
         else:
             print(f"File {file_name} not found in current structure.")
 
-def flatten_structure(base_path, structure, file_locations, current_path=""):
+def flatten_structure(base_path: str, structure: dict, file_locations: dict, current_path=""):
     """
     Recursively flatten the directory structure and collect the full paths of each file.
     """
