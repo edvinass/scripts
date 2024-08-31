@@ -57,9 +57,11 @@ def ai():
 @click.argument('dir')
 def directory(dir):
     """Directory"""
-    sturcture = format_structure(get_directory_structure(dir))
+    sturcture = directory_to_json(dir)
     console.print(sturcture)
     console.print(directory_suggestion(sturcture), style="bold")
+    
+
     
     
 if __name__ == "__main__":

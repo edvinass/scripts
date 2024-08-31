@@ -1,3 +1,4 @@
+import json
 from openai import OpenAI
 import os
 
@@ -73,3 +74,16 @@ def format_structure(dir_structure, indent=0):
             result += format_structure(value, indent + 1)
     return result
     
+def directory_to_json(path):
+    def dir_to_dict(dir_path):
+        structure = {}
+        for item in os.listdir(dir_path):
+            item_path = os.path.join(dir_path, item)
+            if os.path.isdir(item_path):
+                structure[item] = dir_to_dict(item_path)
+            else:
+                structure[item] = None  # Files are marked as None or can store file details
+        return structure
+
+    directory_structure = dir_to_dict(path)
+    return json.dumps(directory_structure, indent=4)
