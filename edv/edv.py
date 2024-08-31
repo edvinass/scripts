@@ -63,6 +63,7 @@ def directory(dir):
     output_dict = dict(directory_suggestion(input_dict))
     console.print(output_dict, style="bold green")
     target_directory = dir + "_new"
+    # String to json
     move_files(dir, target_directory, input_dict, output_dict, DRY_RUN)
     
 if __name__ == "__main__":
