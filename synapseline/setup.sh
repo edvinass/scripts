@@ -7,7 +7,7 @@ echo "Setting up the Python environment and synapseline..."
 REPO_ROOT=$(dirname "$(pwd)")
 
 # Print the detectedv repository path and ask for confirmation
-echo "Detectedv repository root at: $REPO_ROOT"
+echo "Detected repository root at: $REPO_ROOT"
 read -p "Is this correct? (y/n): " CONFIRM
 
 # If the user does not confirm, exit the setup script
@@ -21,7 +21,6 @@ ENV_DIR="$REPO_ROOT/synapseline/setup/synapseline_venv"
 
 # Create the "synapseline/setup" directory if it doesn't exist
 mkdir -p "$REPO_ROOT/synapseline/setup"
-ga 
 # Print a message about the environment setup
 echo "Creating a virtual environment at $ENV_DIR..."
 
@@ -72,7 +71,7 @@ echo "Adding SYNAPSELINE_ROOT environment variable to $PROFILE_FILE..."
 # Add MONARCH_ROOT environment variable to the user's shell configuration
 echo "export SYNAPSELINE_ROOT=\"$REPO_ROOT\"" >> $PROFILE_FILE
 
-# Create a simple wrapper script for the command namedv 'edv'
+# Create a simple wrapper script for the command ss
 SYNAPSELINE_COMMAND="$REPO_ROOT/synapseline/setup/synapseline"
 echo "Creating the edv command at $SYNAPSELINE_COMMAND..."
 
@@ -90,8 +89,19 @@ chmod +x $SYNAPSELINE_COMMAND
 # Print a message about adding the script to the user's PATH
 echo "Adding ss command to your PATH in $PROFILE_FILE..."
 
-# Add the script to the user's PATH in their shell configuration
-echo "export PATH=\"$REPO_ROOT/synapseline/setup:\$PATH\"" >> $PROFILE_FILE
+# Check if the PATH variable is already set in the user's shell configuration
+if grep -q "export PATH=\"$REPO_ROOT/synapseline/setup:\$PATH\"" $PROFILE_FILE; then
+    echo "The PATH variable is already set in $PROFILE_FILE."
+else
+    echo "export PATH=\"$REPO_ROOT/synapseline/setup:\$PATH\"" >> $PROFILE_FILE
+fi
+
+if grep -q "alias ss='synapseline'" $PROFILE_FILE; then
+    echo "The alias for ss is already set in $PROFILE_FILE."
+else
+    echo "alias ss='synapseline'" >> $PROFILE_FILE
+fi
+
 
 # Notify the user to reload their shell manually
 echo "Setup complete. Please run the following command to reload your shell configuration:"
@@ -103,4 +113,4 @@ else
     echo "source ~/.profile"
 fi
 
-echo "You can now use the 'ss' command to run your synapseline script."
+echo "You can now use the 'ss' command to run your SynapseLine script."

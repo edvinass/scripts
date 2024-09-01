@@ -18,7 +18,7 @@ DRY_RUN = False
 
 @click.group()
 def cli():
-    """SynapseLine - A multitool for automating Monarch UI setup"""
+    """SynapseLine - Automate your workflow"""
 
 @cli.command()
 @click.option('--all', is_flag=True, help="Install all dependencies")
