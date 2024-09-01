@@ -58,9 +58,9 @@ def ai():
 @click.argument('dir')
 def directory(dir):
     """Directory"""
-    input_dict = dict(directory_to_json(dir))
+    input_dict = json.loads(directory_to_json(dir))
     console.print(input_dict, style="blue")
-    output_dict = dict(directory_suggestion(input_dict))
+    output_dict = json.loads(directory_suggestion(input_dict))
     console.print(output_dict, style="bold green")
     target_directory = dir + "_new"
     # String to json
