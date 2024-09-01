@@ -11,14 +11,14 @@ from interactive import *
 from openai_utils import *
 from move_files import *
 
-ED_ROOT = os.environ.get("SHELLSTACK_ROOT")
+ED_ROOT = os.environ.get("SYNAPSELINE_ROOT")
 console = Console()
 
 DRY_RUN = False
 
 @click.group()
 def cli():
-    """ShellStack - A multitool for automating Monarch UI setup"""
+    """SynapseLine - A multitool for automating Monarch UI setup"""
 
 @cli.command()
 @click.option('--all', is_flag=True, help="Install all dependencies")
